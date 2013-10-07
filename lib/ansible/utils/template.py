@@ -361,8 +361,11 @@ class _jinja2_vars(object):
     def __contains__(self, k):
         if k in self.vars:
             return True
+        l_k = 'l_' + k
         for i in self.extras:
             if k in i:
+                return True
+            elif l_k in i:
                 return True
         if k in self.globals:
             return True
@@ -370,9 +373,12 @@ class _jinja2_vars(object):
 
     def __getitem__(self, varname):
         if varname not in self.vars:
+            l_varname = 'l_' + varname
             for i in self.extras:
                 if varname in i:
                     return i[varname]
+                elif l_varname in i:
+                    return i[l_varname]
             if varname in self.globals:
                 return self.globals[varname]
             else:
