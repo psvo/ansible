@@ -735,9 +735,9 @@ class PyVmomiHelper(object):
         # Network settings
         adaptermaps = []
         for network in self.params['networks']:
+            guest_map = vim.vm.customization.AdapterMapping()
+            guest_map.adapter = vim.vm.customization.IPSettings()
             if 'ip' in network and 'netmask' in network:
-                guest_map = vim.vm.customization.AdapterMapping()
-                guest_map.adapter = vim.vm.customization.IPSettings()
                 guest_map.adapter.ip = vim.vm.customization.FixedIp()
                 guest_map.adapter.ip.ipAddress = str(network['ip'])
                 guest_map.adapter.subnetMask = str(network['netmask'])
@@ -755,8 +755,10 @@ class PyVmomiHelper(object):
                     guest_map.adapter.dnsServerList = network['dns_servers']
                 elif self.params['customization'].get('dns_servers'):
                     guest_map.adapter.dnsServerList = self.params['customization']['dns_servers']
+            else:
+                guest_map.adapter.ip = vim.vm.customization.DhcpIpGenerator()
 
-                adaptermaps.append(guest_map)
+            adaptermaps.append(guest_map)
 
         # Global DNS settings
         globalip = vim.vm.customization.GlobalIPSettings()
